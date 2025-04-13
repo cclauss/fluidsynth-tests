@@ -1,4 +1,4 @@
-# fluidsynth v2.4.3 works but the default v2.4.4 fails.
+### fluidsynth v2.4.3 works but the default v2.4.4 fails.
 ```yaml
 name: choco
 on:
