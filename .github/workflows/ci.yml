@@ -30,8 +30,12 @@ jobs:
         run: |
           choco install fluidsynth
           echo "PATH=C:\tools\fluidsynth\bin;$PATH" >> $GITHUB_ENV
+          echo "$PATH"
+      - run: echo "$PATH"
       - if: runner.os == 'Windows'
-        run: ls C:\tools\fluidsynth\bin\libfluidsynth-3.dll
+        run: ls C:\tools\fluidsynth\bin
+      - if: runner.os == 'Windows'
+        run: C:\tools\fluidsynth\bin\fluidsynth --version
       - if: runner.os == 'Windows'
         run: |
           dir C:\tools
@@ -63,6 +67,6 @@ jobs:
               print(f"Found {dll_path}")
           else:
               print(f"Did not find {dll_path}")
-          import fluidsynth
-          print(fluidsynth)
-          print(dir(fluidsynth))
+          # import fluidsynth
+          # print(fluidsynth)
+          # print(dir(fluidsynth))
