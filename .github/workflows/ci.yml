@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           choco install fluidsynth
-          echo "PATH=C:\tools\fluidsynth\bin;$PATH" >> $GITHUB_ENV
+          echo "PATH=C:\tools\fluidsynth\bin:$PATH" >> $GITHUB_ENV
           echo "$PATH"
       - shell: bash
         run: echo "$PATH"
@@ -38,7 +38,7 @@ jobs:
         run: ls C:\tools\fluidsynth\bin
       - if: runner.os == 'Windows'
         shell: bash
-        run: /c/tools/fluidsynth/bin/fluidsynth --version
+        run: /c/tools/fluidsynth/bin/fluidsynth.exe --version
       - if: runner.os == 'Windows'
         run: |
           dir C:\tools
