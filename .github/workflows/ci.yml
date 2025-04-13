@@ -1,0 +1,138 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  ci:
+    strategy:
+      fail-fast: false
+      matrix:  # macos-13 in Intel, macos-latest is Apple Silicon ARM
+        os: [macos-13, macos-latest, ubuntu-latest, ubuntu-24.04-arm, windows-latest, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.13
+          version: "latest"
+      - if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install fluidsynth libasound-dev portaudio19-dev python3-pyaudio
+      - if: runner.os == 'macOS'
+        run: |
+          brew install fluid-synth
+          echo "DYLD_LIBRARY_PATH=$(brew --prefix fluid-synth)/lib/" >> $GITHUB_ENV
+      - if: runner.os == 'Windows'
+        run: choco install fluidsynth
+      - if: runner.os == 'Windows'
+        run: ls C:\tools\fluidsynth\bin\libfluidsynth-3.dll
+      - if: runner.os == 'Windows'
+        run: |
+          dir C:\tools
+          dir C:\tools\fluidsynth
+          dir C:\tools\fluidsynth\bin
+          ls C:\tools\fluidsynth\bin\fluidsynth.exe
+          ls C:\tools\fluidsynth\bin\libfluidsynth-3.dll
+        #  fluidsynth.exe --version
+        #  ls /mnt/d/tools/fluidsynth/bin/fluidsynth.exe
+        #  ls /mnt/d/tools/fluidsynth/bin/libfluidsynth-3.dll
+        #  /mnt/d/tools/fluidsynth/bin/fluidsynth.exe --help
+        #  C:\tools\fluidsynth\bin\fluidsynth.exe --help
+        #  echo "PATH=$PATH"
+        #  C:\tools\fluidsynth\bin\fluidsynth.exe --version
+      - run: uv pip install --editable .
+      - shell: python
+        run: |
+          from pathlib import Path
+
+          dll_path = Path("C:/tools/fluidsynth/bin/libfluidsynth-3.dll")
+          if dll_path.exists():
+              print(f"Found {dll_path}")
+          else:
+              print(f"Did not find {dll_path}")
+          dll_path = dll_path.resolve()
+          if dll_path.exists():
+              print(f"Found {dll_path}")
+          else:
+              print(f"Did not find {dll_path}")
+          import fluidsynth
+          print(fluidsynth)
+          print(dir(fluidsynth))
+      # NOTE: The files in test/ are NOT unit tests or pytests.
+      # On macOS ARM64 the following tests will pass but each takes 8 minutes to run.
+      # On macOS X64 all tests will pass quickly.
+      - if: runner.os == 'macOS' && runner.arch == 'X64'
+        run: |
+          python test/test1.py
+          python test/test2.py
+          python test/test3.py
+          python test/sequencerTest.py
+      - if: runner.os == 'Linux'
+        run: |
+          python test/test1.py
+          python test/test3.py
+          python test/sequencerTest.py
+      # On Windows all tests will pass quickly.
+      - if: runner.os == 'Windows'
+        run: |
+          python test/test1.py
+          python test/test2.py
+          python test/test3.py
+          python test/sequencerTest.py
+
+  build:
+    needs: [ci]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write 
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.13
+          version: "latest"
+
+      - name: Clean previous builds
+        run: rm -rf dist
+
+      - name: Build package
+        run: |
+          uv build
+          uvx twine check --strict dist/*
+          ls -la dist
+
+      - name: Upload dist directory as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+  pypi-publish:
+    needs: [build]
+    name: upload release to PyPI
+    if: github.event_name == 'release' && github.event.action == 'created'  # Only on release creation
+    runs-on: ubuntu-latest
+    # Specifying a GitHub environment is optional, but strongly encouraged
+    environment: release
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - run: ls -la
+      - run: ls -la dist || true
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: 3.13
+          version: "latest"
+      - run: uv publish
+      
