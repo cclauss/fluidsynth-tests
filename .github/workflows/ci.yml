@@ -27,7 +27,9 @@ jobs:
           brew install fluid-synth
           echo "DYLD_LIBRARY_PATH=$(brew --prefix fluid-synth)/lib/" >> $GITHUB_ENV
       - if: runner.os == 'Windows'
-        run: choco install fluidsynth
+        run: |
+          choco install fluidsynth
+          echo "PATH=C:\tools\fluidsynth\bin;$PATH" >> $GITHUB_ENV
       - if: runner.os == 'Windows'
         run: ls C:\tools\fluidsynth\bin\libfluidsynth-3.dll
       - if: runner.os == 'Windows'
