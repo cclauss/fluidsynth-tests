@@ -38,7 +38,7 @@ jobs:
         run: ls C:\tools\fluidsynth\bin
       - if: runner.os == 'Windows'
         shell: bash
-        run: C:\tools\fluidsynth\bin\fluidsynth --version
+        run: /c/tools/fluidsynth/bin/fluidsynth --version
       - if: runner.os == 'Windows'
         run: |
           dir C:\tools
