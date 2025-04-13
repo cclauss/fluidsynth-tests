@@ -27,14 +27,17 @@ jobs:
           brew install fluid-synth
           echo "DYLD_LIBRARY_PATH=$(brew --prefix fluid-synth)/lib/" >> $GITHUB_ENV
       - if: runner.os == 'Windows'
+        shell: bash
         run: |
           choco install fluidsynth
           echo "PATH=C:\tools\fluidsynth\bin;$PATH" >> $GITHUB_ENV
           echo "$PATH"
-      - run: echo "$PATH"
+      - shell: bash
+        run: echo "$PATH"
       - if: runner.os == 'Windows'
         run: ls C:\tools\fluidsynth\bin
       - if: runner.os == 'Windows'
+        shell: bash
         run: C:\tools\fluidsynth\bin\fluidsynth --version
       - if: runner.os == 'Windows'
         run: |
@@ -52,7 +55,8 @@ jobs:
         #  C:\tools\fluidsynth\bin\fluidsynth.exe --version
       # - run: uv pip install --editable .
       # - run: which fluidsynth
-      - run: fluidsynth --version
+      - shell: bash
+        run: fluidsynth --version
       - shell: python
         run: |
           from pathlib import Path
