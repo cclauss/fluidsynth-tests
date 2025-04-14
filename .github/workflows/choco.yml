@@ -16,6 +16,10 @@ jobs:
       - run: choco install fluidsynth --version ${{ matrix.fluidsynth-version }}
       - run: fluidsynth --version
         continue-on-error: true  # Fails on Windows fluidsynth v2.4.4 and v2.4.5
+      # v2.4.3: 'libfluidsynth-3' was found as C:\tools\fluidsynth\bin\libfluidsynth-3.dll.
+      # v2.4.4: 'libfluidsynth-3' was found as C:\tools\fluidsynth\bin\libfluidsynth-3.dll
+      #     But ctypes.CDLL(lib) fails https://github.com/FluidSynth/fluidsynth/issues/1510
+      # v2.4.5: 'fluidsynth-3' was found as C:\tools\fluidsynth\bin\fluidsynth-3.dll.
       - shell: python
         run: |
           import ctypes
