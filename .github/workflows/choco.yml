@@ -28,7 +28,7 @@ jobs:
                   if lib := ctypes.util.find_library(lib_name):
                       print(f"'{lib_name}' was found as {lib}.")
                       return lib
-              raise FileNotFound
+              raise FileNotFoundError
   
           os.add_dll_directory('C:\\tools\\fluidsynth\\bin')
           lib = load_libfluidsynth()
