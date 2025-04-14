@@ -26,15 +26,18 @@ jobs:
           import ctypes.util
           import os
           
-          def load_libfluidsynth() -> str:
+          def find_libfluidsynth(debug_print: bool = False) -> str:
               libs = "fluidsynth fluidsynth-3 libfluidsynth libfluidsynth-3 libfluidsynth-2 libfluidsynth-1"
               for lib_name in libs.split():
                   if lib := ctypes.util.find_library(lib_name):
-                      print(f"'{lib_name}' was found as {lib}.")
+                      if debug_print:
+                          print(f"'{lib_name}' was found as {lib}.")
                       return lib
               raise FileNotFoundError
   
-          os.add_dll_directory("C:\\tools\\fluidsynth\\bin")
-          os.environ['PATH'] += ";C:\\tools\\fluidsynth\\bin"
-          lib = load_libfluidsynth()
+          # os.add_dll_directory() is only available on Windows and does nothing useful!
+          # if hasattr(os, "add_dll_directory"):  # Only available on Windows
+          #     os.add_dll_directory("C:\\tools\\fluidsynth\\bin")
+          os.environ["PATH"] += ";C:\\tools\\fluidsynth\\bin"
+          lib = find_libfluidsynth(debug_print=True)
           print(f"{ctypes.CDLL(lib) = }")
