@@ -23,7 +23,7 @@ jobs:
           import os
           
           def load_libfluidsynth() -> str:
-              libs = "fluidsynth libfluidsynth libfluidsynth-3 libfluidsynth-2 libfluidsynth-1"
+              libs = "fluidsynth fluidsynth-3 libfluidsynth libfluidsynth-3 libfluidsynth-2 libfluidsynth-1"
               for lib_name in libs.split():
                   if lib := ctypes.util.find_library(lib_name):
                       print(f"'{lib_name}' was found as {lib}.")
@@ -33,4 +33,4 @@ jobs:
           os.add_dll_directory("C:\\tools\\fluidsynth\\bin")
           os.environ['PATH'] += ";C:\\tools\\fluidsynth\\bin"
           lib = load_libfluidsynth()
-          print(f"{CDLL(lib) = }")
+          print(f"{ctypes.CDLL(lib) = }")
