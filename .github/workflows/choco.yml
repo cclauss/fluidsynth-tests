@@ -30,6 +30,7 @@ jobs:
                       return lib
               raise FileNotFoundError
   
-          os.add_dll_directory('C:\\tools\\fluidsynth\\bin')
+          os.add_dll_directory("C:\\tools\\fluidsynth\\bin")
+          os.environ['PATH'] += ";C:\\tools\\fluidsynth\\bin"
           lib = load_libfluidsynth()
           print(f"{CDLL(lib) = }")
