@@ -9,6 +9,7 @@ v2.4.5: 'fluidsynth-3' was found as C:\tools\fluidsynth\bin\fluidsynth-3.dll.
 
 * v2.4.4: https://github.com/FluidSynth/fluidsynth/issues/1541
 * v2.4.5: https://github.com/FluidSynth/fluidsynth/issues/1543
+* Both:   https://github.com/FluidSynth/fluidsynth/issues/1544
 
 ```yaml
 name: choco
