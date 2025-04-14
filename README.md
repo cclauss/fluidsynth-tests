@@ -1,4 +1,4 @@
-### `choco install fluidsynth` v2.4.3 works but the default v2.4.4 fails.
+### `choco install fluidsynth` v2.4.3 works but v2.4.4 fails.
 ```
 v2.4.3: 'libfluidsynth-3' was found as C:\tools\fluidsynth\bin\libfluidsynth-3.dll.
 v2.4.4: 'libfluidsynth-3' was found as C:\tools\fluidsynth\bin\libfluidsynth-3.dll
