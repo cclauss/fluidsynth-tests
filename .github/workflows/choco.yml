@@ -15,12 +15,12 @@ jobs:
     steps:  # fluidsynth v2.4.3 works but the default v2.4.4 fails.
       - run: choco install fluidsynth --version ${{ matrix.fluidsynth-version }}
       - run: fluidsynth --version
+        continue-on-error: true  # Fails on Windows fluidsynth v2.4.4 and v2.4.5
       - shell: python
         run: |
           import ctypes
+          import ctypes.util
           import os
-          from os import add_dll_directory
-          from ctypes import CDLL
           
           def load_libfluidsynth() -> str:
               libs = "fluidsynth libfluidsynth libfluidsynth-3 libfluidsynth-2 libfluidsynth-1"
