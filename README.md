@@ -25,14 +25,16 @@ jobs:
       matrix:  # https://community.chocolatey.org/packages/fluidsynth
         fluidsynth-version: [ 2.4.3, 2.4.4, 2.4.5 ]
     runs-on: windows-latest
-    steps:  # fluidsynth v2.4.3 works but the default v2.4.4 fails.
-      - run: choco install fluidsynth --version ${{ matrix.fluidsynth-version }}
-      - run: fluidsynth --version
-        continue-on-error: true  # Fails on Windows fluidsynth v2.4.4 and v2.4.5
+    steps:  # fluidsynth v2.4.3 works but v2.4.4 fails and v2.4.5 on X64 works under a renamed DLL.
+      - name: "choco install fluidsynth --version=${{ matrix.fluidsynth-version }} on ${{ runner.os }} on ${{ runner.arch }}"
+        run: choco install fluidsynth --version=${{ matrix.fluidsynth-version }}
+      - run: fluidsynth --version  # Fails on Windows fluidsynth v2.4.4 and v2.4.5
+        continue-on-error: true
       # v2.4.3: 'libfluidsynth-3' was found as C:\tools\fluidsynth\bin\libfluidsynth-3.dll.
       # v2.4.4: 'libfluidsynth-3' was found as C:\tools\fluidsynth\bin\libfluidsynth-3.dll
       #     But ctypes.CDLL(lib) fails https://github.com/FluidSynth/fluidsynth/issues/1510
       # v2.4.5: 'fluidsynth-3' was found as C:\tools\fluidsynth\bin\fluidsynth-3.dll.
+      #     Library is renamed on Windows MSVC builds on X64.
       - shell: python
         run: |
           import ctypes
